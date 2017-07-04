@@ -163,6 +163,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   float dt_3 = dt_2*dt;
   float dt_4 = dt_3*dt;
 
+
   //modify the F matrix so that the time is integrated
   ekf_.F_(0,2) = dt;
   ekf_.F_(1,3) = dt;
@@ -172,9 +173,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
           0, dt_4 / 4.0  * noise_ay, 0, dt_3 / 2.0 * noise_ay,
           dt_3 / 2.0 * noise_ax, 0, dt_2 * noise_ax, 0,
           0, dt_3 / 2.0 * noise_ay, 0, dt_2 * noise_ay;
-  if(dt > 0.001) {
+
     ekf_.Predict();
-  }
+
   /*****************************************************************************
    *  Update
    ****************************************************************************/
