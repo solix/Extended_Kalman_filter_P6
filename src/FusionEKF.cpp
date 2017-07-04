@@ -45,6 +45,7 @@ FusionEKF::FusionEKF() {
 
   //acceleration noise component
   ekf_.F_= MatrixXd(4, 4);
+
   ekf_.P_ = MatrixXd(4, 4);
 
   ekf_.F_ << 1, 0, 1, 0,
@@ -79,7 +80,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    ****************************************************************************/
   if (!is_initialized_) {
     /**
-    TODO:
       * Initialize the state ekf_.x_ with the first measurement.
       * Create the covariance matrix.
       * Remember: you'll need to convert radar from polar to cartesian coordinates.
@@ -88,7 +88,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     cout << "EKF: " << endl;
 
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 1, 1;  //play around for RMSE
+    ekf_.x_ << 1, 1, 0.2, 0.5;  //play around for RMSE
 
 
 
@@ -96,25 +96,26 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Convert radar from polar to cartesian coordinates and initialize state.
       */
-      cout << "RADAR: " << endl;
+      cout << "RADAR Data: " << endl;
 
       double rho = measurement_pack.raw_measurements_[0]; // range
       double phi = measurement_pack.raw_measurements_[1]; // bearing
       double rho_dot = measurement_pack.raw_measurements_[2]; // velocity of rho
+
       // Coordinates convertion from polar to cartesian
-      float x = rho * cos(phi);
-      float y = rho * sin(phi);
-      float vx = rho_dot * cos(phi);
-      float vy = rho_dot * sin(phi);
+      double x = rho * cos(phi);
+      double y = rho * sin(phi);
+      double vx = rho_dot * cos(phi);
+      double vy = rho_dot * sin(phi);
       ekf_.x_ << x, y, vx , vy;
-      cout << "END RADAR: " << endl;
+      cout << "END RADAR Data: " << endl;
 
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       /**
       Initialize state.
       */
-      cout << "LASER: " << endl;
+      cout << "LASER Data: " << endl;
 
         ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
 
@@ -122,7 +123,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 
 
-      cout << "END LASER: " << endl;
+      cout << "END LASER Data: " << endl;
 
 
       //
@@ -136,7 +137,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // done initializing, no need to predict or update
     is_initialized_ = true;
 
-    cout << "END not Initialized : " << endl;
 
     return;
   }

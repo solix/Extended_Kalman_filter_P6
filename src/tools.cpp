@@ -35,6 +35,8 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
         residuals = residuals.array() * residuals.array();
         rmse += residuals;
     }
+    cout << 'RMSE: '<< rmse << endl;
+    return rmse;
 }
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   /**
