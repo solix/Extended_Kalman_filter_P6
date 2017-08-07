@@ -26,12 +26,12 @@ FusionEKF::FusionEKF() {
 
   //measurement covariance matrix - laser
   R_laser_ << 0.0225, 0,
-        0, 0.0225;
+           0, 0.0225;
 
   //measurement covariance matrix - radar
   R_radar_ << 0.09, 0, 0,
-        0, 0.0009, 0,
-        0, 0, 0.09;
+           0, 0.0009, 0,
+           0, 0, 0.09;
 
   /**
   TODO:
@@ -39,12 +39,12 @@ FusionEKF::FusionEKF() {
     * Set the process and measurement noises
   */
 
-  H_laser_ << 1,0,0,0,
-              0,1,0,0;
+  H_laser_ << 1, 0, 0, 0,
+           0, 1, 0, 0;
 
 
   //acceleration noise component
-  ekf_.F_= MatrixXd(4, 4);
+  ekf_.F_ = MatrixXd(4, 4);
 
   ekf_.P_ = MatrixXd(4, 4);
 
@@ -52,10 +52,10 @@ FusionEKF::FusionEKF() {
           0, 1, 0, 1,
           0, 0, 1, 0,
           0, 0, 0, 1;
- ekf_.P_ << 1, 0, 0, 0,
-         0, 1, 0, 0,
-         0, 0, 100, 0,
-         0, 0, 0, 100;
+  ekf_.P_ << 1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 100, 0,
+          0, 0, 0, 100;
 
 
   ekf_.Q_ = MatrixXd(4, 4);
@@ -117,7 +117,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       */
       cout << "LASER Data: " << endl;
 
-        ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+      ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
 
 
 
@@ -126,13 +126,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       cout << "END LASER Data: " << endl;
 
 
-      //
+
 
     }
 
     previous_timestamp_ = measurement_pack.timestamp_;
 
-//    cout << "Time: " + previous_timestamp_ << endl;
 
     // done initializing, no need to predict or update
     is_initialized_ = true;
@@ -159,22 +158,22 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   previous_timestamp_ = measurement_pack.timestamp_;
   cout << "Previous timestamp" << endl;
 
-  float dt_2 = dt*dt;
-  float dt_3 = dt_2*dt;
-  float dt_4 = dt_3*dt;
+  float dt_2 = dt * dt;
+  float dt_3 = dt_2 * dt;
+  float dt_4 = dt_3 * dt;
 
 
   //modify the F matrix so that the time is integrated
-  ekf_.F_(0,2) = dt;
-  ekf_.F_(1,3) = dt;
+  ekf_.F_(0, 2) = dt;
+  ekf_.F_(1, 3) = dt;
 
   //set the process covariance matrix Q
-  ekf_.Q_ <<  dt_4/4.0 * noise_ax, 0, dt_3 / 2.0 * noise_ax, 0,
+  ekf_.Q_ <<  dt_4 / 4.0 * noise_ax, 0, dt_3 / 2.0 * noise_ax, 0,
           0, dt_4 / 4.0  * noise_ay, 0, dt_3 / 2.0 * noise_ay,
           dt_3 / 2.0 * noise_ax, 0, dt_2 * noise_ax, 0,
           0, dt_3 / 2.0 * noise_ay, 0, dt_2 * noise_ay;
 
-    ekf_.Predict();
+  ekf_.Predict();
 
   /*****************************************************************************
    *  Update
@@ -200,7 +199,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // Laser updates
     cout << "LASER update: " << endl;
 
-    ekf_.H_= H_laser_;
+    ekf_.H_ = H_laser_;
     ekf_.R_ = R_laser_;
     ekf_.Update(measurement_pack.raw_measurements_);
     cout << "END LASER update: " << endl;
